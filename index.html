@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>استقصاء المشاكل والمقترحات التعليمية</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Marhey:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Marhey', sans-serif;
+            background-color: #f0f8ff;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            direction: rtl; /* تحديد اتجاه النص من اليمين إلى اليسار */
+        }
+
+        .container {
+            width: 60%;
+            margin: auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #00796b;
+            font-weight: 700;
+        }
+
+        .intro {
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 18px;
+            color: #555;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #e0f2f1;
+            border: 1px solid #b2dfdb;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .intro::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, #00796b, #004d40);
+            border-radius: 50%;
+            transform: translateX(-50%);
+            z-index: -1;
+        }
+
+        .intro h1 {
+            color: #004d40;
+            margin-bottom: 10px;
+        }
+
+        .intro p {
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            background-color: #fce4ec;
+            color: #333;
+            direction: rtl; /* تحديد اتجاه النص من اليمين إلى اليسار */
+        }
+
+        button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #00796b;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #004d40;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #e0f7fa;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 8px;
+            color: #00796b;
+            direction: rtl; /* تحديد اتجاه النص من اليمين إلى اليسار */
+        }
+
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+
+        .flash {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            opacity: 1;
+            transition: opacity 1s ease-out;
+        }
+
+        .flash.hidden {
+            opacity: 0;
+        }
+
+        .flash.success {
+            background-color: #dff0d8;
+            color: #3c763d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="intro">
+            <h1>مرحبا بك في استقصاء المشاكل والمقترحات التعليمية!</h1>
+            <p>
+                في سعينا المستمر لتحسين بيئة التعليم، قمنا بإنشاء هذا الاستقصاء لتسهيل جمع المشاكل والمقترحات من المعلمين والطلاب على حد سواء. هدفنا هو الاستماع إليك وفهم التحديات التي تواجهها في مجال التعليم، بالإضافة إلى استلام أفكارك المبتكرة التي قد تساهم في حل هذه المشكلات.
+                <br><br>
+                <strong>نؤمن بقوة أن كل فكرة يمكن أن تحدث فرقًا حقيقيًا في تحسين تجربة التعلم.</strong>
+                <br><br>
+                ماذا نحتاج منك؟
+                <br><br>
+                <strong>المشاكل التعليمية:</strong> إذا كنت تواجه مشكلة في عملية التعليم، سواء كانت تتعلق بالمناهج أو الأدوات التعليمية أو أي جانب آخر، يرجى كتابة تفاصيل المشكلة في خانة "المشاكل التعليمية".
+                <br>
+                <strong>المقترحات:</strong> إذا كان لديك فكرة أو اقتراح يمكن أن يحل مشكلة معينة أو يحسن من تجربة التعليم، يمكنك مشاركة هذا المقترح في خانة "المقترحات".
+                <br><br>
+                كل مشاركة منك تساهم في تحسين نظام التعليم وجعل بيئة التعلم أكثر فعالية وإيجابية. شكراً لمشاركتك وإسهامك في تطوير التعليم!
+            </p>
+        </div>
+
+        <!-- عرض الرسائل -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        <div class="section">
+            <h2>المشاكل التعليمية</h2>
+            <form action="/submit_problem" method="post">
+                <textarea name="problem" rows="5" placeholder="اكتب هنا المشكلة التي تواجهك..." required></textarea><br>
+                <button type="submit" class="problem-button">إرسال المشكلة</button>
+            </form>
+
+            <ul>
+                {% for problem in problems %}
+                    <li>{{ problem }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        
+        <div class="section">
+            <h2>المقترحات</h2>
+            <form action="/submit_suggestion" method="post">
+                <textarea name="suggestion" rows="5" placeholder="اكتب هنا المقترح الذي تعتقد أنه سيحل المشكلة..." required></textarea><br>
+                <button type="submit" class="suggestion-button">إرسال المقترح</button>
+            </form>
+
+            <ul>
+                {% for suggestion in suggestions %}
+                    <li>{{ suggestion }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // اختفاء رسائل الشكر بعد 5 ثوانٍ
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                var flashes = document.querySelectorAll('.flash');
+                flashes.forEach(function(flash) {
+                    flash.classList.add('hidden');
+                });
+            }, 5000);
+        });
+    </script>
+</body>
+</html>
